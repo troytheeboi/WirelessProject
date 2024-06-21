@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Question 3</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f0f0;
+        }
+
+        nav {
+            background-color: #4CAF50;
+            padding: 10px;
+            text-align: center;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+        }
+
+        nav a {
+            color: white;
+            margin: 0 15px;
+            text-decoration: none;
+            font-weight: bold;
+            padding: 10px 20px; /* Add padding for better highlight */
+            border-radius: 3px;
+        }
+
+        nav a:hover {
+            background-color: #45a049; /* Highlight color on hover */
+        }
+
+        .container {
+            margin-top: 60px; /* Adjust this value based on nav height */
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+
+        form {
+            width: 50%;
+            margin: 20px auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+        }
+
+        .button-container {
+            text-align: center; /* Center the button container */
+        }
+
+        button {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        h2 {
+            margin-top: 20px;
+            color: #333;
+            text-align: center; /* Center the text */
+        }
+
+        p {
+            margin-bottom: 5px;
+            text-align: center; /* Center the text */
+        }
+
+        .messages {
+            color: red;
+            text-align: center; /* Center the messages */
+        }
+
+        .messages li {
+            list-style-position: inside; /* Ensure the bullets are inside the element */
+        }
+
+    </style>
+</head>
+<nav>
+    <a href="/questionOne">Question 1</a>
+    <a href="/question2">Question 2</a>
+    <a href="/question3">Question 3</a>
+    <a href="/question4">Question 4</a>
+    <a href="/question5">Question 5</a>
+</nav>
+
+<body>
+<div class="container">
+
+    <h1>Question 3</h1>
+    <form name="calculatorForm" method="post" action="{{ url_for('questionthree') }}">
+
+        <label for="power_unit">Output Power Unit:</label>
+        <select name="output_power_unit">
+            <option value="dB" {% if output_power_unit == 'dB' %}selected{% endif %}>dB</option>
+            <option value="Watt" {% if output_power_unit == 'Watt' %}selected{% endif %}>Watt</option>
+        </select><br>
+
+        <br>
+
+        <label for="modulation_scheme">Modulation Scheme:</label>
+        <select name="modulation_scheme">
+            <option value="BPSK/QPSK" {% if modulation_scheme == 'BPSK/QPSK' %}selected{% endif %}>BPSK/QPSK</option>
+            <option value="8-PSK" {% if modulation_scheme == '8-PSK' %}selected{% endif %}>8-PSK</option>
+            <option value="16-PSK" {% if modulation_scheme == '16-PSK' %}selected{% endif %}>16-PSK</option>
+        </select><br>
+
+        <br><br>
+
+        <label for="path_loss">Path Loss:</label>
+        <input type="text" name="path_loss" value="{{ path_loss|default('') }}" required>
+
+        <select name="power_unit_path_loss">
+            <option value="dB" {% if power_unit_path_loss == 'dB' %}selected{% endif %}>dB</option>
+            <option value="Watt" {% if power_unit_path_loss == 'Watt' %}selected{% endif %}>Watt</option>
+        </select>
+
+        <br>
+
+        <label for="frequency">Frequency (MHz):</label>
+        <input type="text" name="frequency" value="{{ frequency |default('') }}" required><br>
+
+        <select name="power_unit_frequency">
+            <option value="Hz" {% if power_unit_frequency == 'Hz' %}selected{% endif %}>Hz</option>
+            <option value="dB" {% if power_unit_frequency == 'dB' %}selected{% endif %}>dB</option>
+        </select>
+
+        <br>
+
+        <label for="transmit_antenna_gain">Transmit Antenna Gain:</label>
+        <input type="text" name="transmit_antenna_gain" value="{{ transmit_antenna_gain |default('') }}" required><br>
+        <select name="power_unit_transmit_antenna_gain">
+            <option value="dB" {% if power_unit_transmit_antenna_gain == 'dB' %}selected{% endif %}>dB</option>
+            <option value="Watt" {% if power_unit_transmit_antenna_gain == 'Watt' %}selected{% endif %}>Watt</option>
+        </select>
+
+        <br>
+
+
+        <label for="receive_antenna_gain">Receive Antenna Gain:</label>
+        <input type="text" name="receive_antenna_gain" value="{{ receive_antenna_gain |default('') }}" required><br>
+        <select name="power_unit_receive_antenna_gain">
+            <option value="dB" {% if power_unit_receive_antenna_gain == 'dB' %}selected{% endif %}>dB</option>
+            <option value="Watt" {% if power_unit_receive_antenna_gain == 'Watt' %}selected{% endif %}>Watt</option>
+        </select>
+
+        <br>
+
+        <label for="data_rate">Data Rate (kbps):</label>
+        <input type="text" name="data_rate" value="{{ data_rate |default('') }}" required><br>
+        <select name="power_unit_data_rate">
+            <option value="kbps" {% if power_unit_data_rate == 'kbps' %}selected{% endif %}>kbps</option>
+            <option value="dB" {% if power_unit_data_rate == 'dB' %}selected{% endif %}>dB</option>
+        </select>
+
+        <br>
+
+        <label for="antenna_feed_loss">Antenna Feed Loss:</label>
+        <input type="text" name="antenna_feed_loss" value="{{ antenna_feed_loss |default('') }}" required><br>
+        <select name="power_unit_antenna_feed_loss">
+            <option value="dB" {% if power_unit_antenna_feed_loss == 'dB' %}selected{% endif %}>dB</option>
+            <option value="Watt" {% if power_unit_antenna_feed_loss == 'Watt' %}selected{% endif %}>Watt</option>
+        </select>
+
+        <br>
+
+        <label for="other_losses">Other Losses:</label>
+        <input type="text" name="other_losses" value="{{ other_losses |default('') }}" required><br>
+        <select name="power_unit_other_losses">
+            <option value="dB" {% if power_unit_other_losses == 'dB' %}selected{% endif %}>dB</option>
+            <option value="Watt" {% if power_unit_other_losses == 'Watt' %}selected{% endif %}>Watt</option>
+        </select>
+        <br>
+
+        <label for="fade_margin">Fade Margin:</label>
+        <input type="text" name="fade_margin" value="{{ fade_margin |default('') }}" required><br>
+        <select name="power_unit_fade_margin">
+            <option value="dB" {% if power_unit_fade_margin == 'dB' %}selected{% endif %}>dB</option>
+            <option value="Watt" {% if power_unit_fade_margin == 'Watt' %}selected{% endif %}>Watt</option>
+        </select>
+
+        <br>
+
+        <label for="receiver_amplifier_gain">Receiver Amplifier Gain:</label>
+        <input type="text" name="receiver_amplifier_gain" value="{{ receiver_amplifier_gain |default('') }}"
+               required><br>
+
+        <select name="power_unit_receiver_amplifier_gain">
+            <option value="dB" {% if power_unit_receiver_amplifier_gain == 'dB' %}selected{% endif %}>dB</option>
+            <option value="Watt" {% if power_unit_receiver_amplifier_gain == 'Watt' %}selected{% endif %}>Watt</option>
+        </select>
+        <br>
+
+        <label for="total_noise_figure">Total Noise Figure:</label>
+        <input type="text" name="total_noise_figure" value="{{ total_noise_figure |default('') }}" required><br>
+        <select name="power_unit_total_noise_figure">
+            <option value="dB" {% if power_unit_total_noise_figure == 'dB' %}selected{% endif %}>dB</option>
+            <option value="Watt" {% if power_unit_total_noise_figure == 'Watt' %}selected{% endif %}>Watt</option>
+        </select>
+
+        <br>
+
+        <label for="noise_temperature">Noise Temperature (K):</label>
+        <input type="text" name="noise_temperature" value="{{ noise_temperature |default('') }}" required><br>
+        <select name="power_unit_noise_temperature">
+            <option value="K" {% if power_unit_noise_temperature == 'K' %}selected{% endif %}>K</option>
+            <option value="dB" {% if power_unit_noise_temperature == 'dB' %}selected{% endif %}>dB</option>
+        </select>
+        <br>
+
+        <label for="link_margin">Link Margin:</label>
+        <input type="text" name="link_margin" value="{{ link_margin |default('') }}" required><br>
+        <select name="power_unit_link_margin">
+            <option value="dB" {% if power_unit_link_margin == 'dB' %}selected{% endif %}>dB</option>
+            <option value="Watt" {% if power_unit_link_margin == 'Watt' %}selected{% endif %}>Watt</option>
+        </select>
+        <br>
+
+        <label for="max_bit_error_rate">Maximum Bit Error Rate:</label>
+        <input type="text" name="max_bit_error_rate" value="{{ max_bit_error_rate |default('') }}" required><br>
+
+        <br>
+
+
+        <div class="button-container">
+            <button type="submit">Calculate</button>
+        </div>
+    </form>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <ul class="messages">
+                {% for category, message in messages %}
+                    <li class="{{ category }}">{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    {% endwith %}
+
+    {% if required_transmit_power %}
+        <h2>Results:</h2>
+        <p>Required Transmit Power (dB): {{ required_transmit_power }} dB</p>
+        <p>Required Transmit Power (Watt): {{ required_transmit_power_watt }} Watt</p>
+        <br><br>
+    {% endif %}
+</div>
+</body>
+</html>

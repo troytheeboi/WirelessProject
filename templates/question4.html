@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Question 4</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f0f0;
+        }
+
+        nav {
+            background-color: #4CAF50;
+            padding: 10px;
+            text-align: center;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+        }
+
+        nav a {
+            color: white;
+            margin: 0 15px;
+            text-decoration: none;
+            font-weight: bold;
+            padding: 10px 20px; /* Add padding for better highlight */
+            border-radius: 3px;
+        }
+
+        nav a:hover {
+            background-color: #45a049; /* Highlight color on hover */
+        }
+
+        .container {
+            margin-top: 60px; /* Adjust this value based on nav height */
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+
+        form {
+            width: 50%;
+            margin: 20px auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+        }
+
+        .button-container {
+            text-align: center; /* Center the button container */
+        }
+
+        button {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        h2 {
+            margin-top: 20px;
+            color: #333;
+            text-align: center; /* Center the text */
+        }
+
+        p {
+            margin-bottom: 5px;
+            text-align: center; /* Center the text */
+        }
+
+        .messages {
+            color: red;
+            text-align: center; /* Center the messages */
+        }
+
+        .messages li {
+            list-style-position: inside; /* Ensure the bullets are inside the element */
+        }
+
+    </style>
+</head>
+
+<body>
+<nav>
+    <a href="/questionOne">Question 1</a>
+    <a href="/question2">Question 2</a>
+    <a href="/question3">Question 3</a>
+    <a href="/question4">Question 4</a>
+    <a href="/question5">Question 5</a>
+</nav>
+<div class="container">
+    <h1>Question 4</h1>
+    <form name="calculatorForm" method="post" action="{{ url_for('questionfour') }}">
+
+        <label for="transmission_bandwidth">Transmission Bandwidth (Mbps):</label>
+        <input type="text" name="transmission_bandwidth" value="{{ transmission_bandwidth|default('') }}" required>
+
+        <label for="propagation_time">Propagation Time (μsec):</label>
+        <input type="text" name="propagation_time" value="{{ propagation_time|default('') }}" required>
+
+        <label for="frame_size">Frame Size (Kbits):</label>
+        <input type="text" name="frame_size" value="{{ frame_size|default('') }}" required>
+
+        <label for="frame_rate">Frame Rate (Kfps):</label>
+        <input type="text" name="frame_rate" value="{{ frame_rate|default('') }}" required>
+
+        <div class="button-container">
+            <button type="submit">Calculate</button>
+        </div>
+    </form>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <ul class="messages">
+                {% for category, message in messages %}
+                    <li class="{{ category }}">{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    {% endwith %}
+
+    {% if throughput_pure_aloha %}
+        <h2>Results:</h2>
+
+        <p>Throughput of Pure Aloha: {{ throughput_pure_aloha }} %</p>
+        <p>Throughput of Slotted Aloha: {{ throughput_slotted_aloha }} %</p>
+        <p>Throughput of Unslotted Nonpersistent CSMA: {{ throughput_unslotted_nonpersistent_csma }} %</p>
+        <p>Throughput of Slotted Nonpersistent CSMA: {{ throughput_slotted_nonpersistent_csma }} %</p>
+        <p>Throughput of Slotted 1-persistent CSMA: {{ throughput_slotted_persistent_csma }} %</p>
+        <br><br>
+    {% endif %}
+</div>
+</body>
+</html>
