@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Question 1</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f0f0;
+        }
+
+        nav {
+            background-color: #4CAF50;
+            padding: 10px;
+            text-align: center;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+        }
+
+        nav a {
+            color: white;
+            margin: 0 15px;
+            text-decoration: none;
+            font-weight: bold;
+            padding: 10px 20px; /* Add padding for better highlight */
+            border-radius: 3px;
+        }
+
+        nav a:hover {
+            background-color: #45a049; /* Highlight color on hover */
+        }
+
+        .container {
+            margin-top: 60px; /* Adjust this value based on nav height */
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+
+        form {
+            width: 50%;
+            margin: 20px auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+        }
+
+        .button-container {
+            text-align: center; /* Center the button container */
+        }
+
+        button {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        h2 {
+            margin-top: 20px;
+            color: #333;
+            text-align: center; /* Center the text */
+        }
+
+        p {
+            margin-bottom: 5px;
+            text-align: center; /* Center the text */
+        }
+
+         .messages {
+            color: red;
+            text-align: center; /* Center the messages */
+        }
+        .messages li {
+            list-style-position: inside; /* Ensure the bullets are inside the element */
+        }
+    </style>
+</head>
+<body>
+<nav>
+    <a href="/questionOne">Question 1</a>
+    <a href="/question2">Question 2</a>
+    <a href="/question3">Question 3</a>
+    <a href="/question4">Question 4</a>
+    <a href="/question5">Question 5</a>
+</nav>
+
+<div class="container">
+
+    <h1>Question 1</h1>
+    <form name="calculatorForm" method="post" action="{{ url_for('calculate') }}">
+        <label for="bandwidth">Bandwidth (KHz):</label>
+        <input type="text" name="bandwidth" value="{{ bandwidth |default('')}}" required><br>
+
+        <label for="quantizer_bits">Quantizer Bits:</label>
+        <input type="text" name="quantizer_bits" value="{{ quantizer_bits |default('')}}" required><br>
+
+        <label for="source_encoder_rate">Source Encoder Compression Rate:</label>
+        <input type="text" name="source_encoder_rate" value="{{ source_encoder_rate |default('')}}" required><br>
+
+        <label for="channel_encoder_rate">Channel Encoder Compression Rate:</label>
+        <input type="text" name="channel_encoder_rate" value="{{ channel_encoder_rate |default('')}}" required><br>
+
+        <label for="interleaver_bits">Interleaver Bits:</label>
+        <input type="text" name="interleaver_bits" value="{{ interleaver_bits |default('')}}" required><br>
+
+        <div class="button-container">
+            <button type="submit">Calculate</button>
+        </div>
+    </form>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <ul class="messages">
+                {% for category, message in messages %}
+                    <li class="{{ category }}">{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    {% endwith %}
+
+    {% if sampling_frequency %}
+        <h2>Results:</h2>
+        <p>Sampling Frequency: {{ sampling_frequency }} KHz</p>
+        <p>Quantizer Levels: {{ quantizer_levels }} Levels</p>
+        <p>Source Encoder Output Rate: {{ source_encoder_output_rate }} kbps</p>
+        <p>Channel Encoder Output Rate: {{ channel_encoder_output_rate }} kbps</p>
+        <p>Interleaver Output Rate: {{ interleaver_output_rate }} kbps</p>
+        <br><br>
+    {% endif %}
+</div>
+</body>
+</html>

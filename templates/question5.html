@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Question 5</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f0f0;
+        }
+
+        nav {
+            background-color: #4CAF50;
+            padding: 10px;
+            text-align: center;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+        }
+
+        nav a {
+            color: white;
+            margin: 0 15px;
+            text-decoration: none;
+            font-weight: bold;
+            padding: 10px 20px; /* Add padding for better highlight */
+            border-radius: 3px;
+        }
+
+        nav a:hover {
+            background-color: #45a049; /* Highlight color on hover */
+        }
+
+        .container {
+            margin-top: 60px; /* Adjust this value based on nav height */
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+
+        form {
+            width: 50%;
+            margin: 20px auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+        }
+
+        .button-container {
+            text-align: center; /* Center the button container */
+        }
+
+        button {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        h2 {
+            margin-top: 20px;
+            color: #333;
+            text-align: center; /* Center the text */
+        }
+
+        p {
+            margin-bottom: 5px;
+            text-align: center; /* Center the text */
+        }
+
+        .messages {
+            color: red;
+            text-align: center; /* Center the messages */
+        }
+
+        .messages li {
+            list-style-position: inside; /* Ensure the bullets are inside the element */
+        }
+
+    </style>
+</head>
+
+<body>
+<nav>
+    <a href="/questionOne">Question 1</a>
+    <a href="/question2">Question 2</a>
+    <a href="/question3">Question 3</a>
+    <a href="/question4">Question 4</a>
+    <a href="/question5">Question 5</a>
+</nav>
+<div class="container">
+
+    <h1>Question 5</h1>
+    <form name="calculatorForm" method="post" action="{{ url_for('questionfive') }}">
+
+        <label for="timeslots_per_carrier">Timeslots per Carrier:</label>
+        <input type="text" name="timeslots_per_carrier" value="{{ timeslots_per_carrier |default('')}}" required>
+
+        <label for="area">Area (Km²):</label>
+        <input type="text" name="area"  value="{{ area |default('')}}" required>
+
+        <label for="num_subscribers">Number of Subscribers:</label>
+        <input type="text" name="num_subscribers"  value="{{ num_subscribers |default('')}}" required>
+
+        <label for="calls_per_day">Subscriber Calls Per Day:</label>
+        <input type="text" name="calls_per_day"  value="{{ calls_per_day |default('')}}" required>
+
+        <label for="avg_call_duration">Subscriber Average Call Duration (Minutes):</label>
+        <input type="text" name="avg_call_duration"  value="{{ avg_call_duration |default('')}}" required>
+
+        <label for="grade_of_service">Grade of Service:</label>
+        <input type="text" name="grade_of_service" value="{{ grade_of_service |default('')}}" required>
+
+        <label for="min_sir_value">Minimum SIR:</label>
+        <input type="text" name="min_sir_value"  value="{{ min_sir_value |default('')}}" required>
+        <select name="min_sir_unit">
+            <option value="dB">dB</option>
+            <option value="Watt">Watt</option>
+        </select>
+
+        <label for="power_reference_value">Power Measured as Reference:</label>
+        <input type="text" name="power_reference_value" value="{{ power_reference_value |default('')}}" required>
+        <select name="power_reference_unit">
+            <option value="dB">dB</option>
+            <option value="Watt">Watt</option>
+        </select>
+
+        <label for="reference_distance">Reference Distance (Meters):</label>
+        <input type="text" name="reference_distance"  value="{{ reference_distance |default('')}}" required>
+
+        <label for="path_loss_exponent">Path Loss Exponent:</label>
+        <input type="text" name="path_loss_exponent"  value="{{ path_loss_exponent |default('')}}" required>
+
+        <label for="receiver_sensitivity_value">Receiver Sensitivity:</label>
+        <input type="text" name="receiver_sensitivity_value"  value="{{ receiver_sensitivity_value |default('')}}" required>
+        <select name="receiver_sensitivity_unit">
+            <option value="μWatts">μWatts</option>
+            <option value="dB">dB</option>
+        </select>
+        <br><br>
+        <div class="button-container">
+            <button type="submit">Calculate</button>
+        </div>
+    </form>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <ul class="messages">
+                {% for category, message in messages %}
+                    <li class="{{ category }}">{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    {% endwith %}
+    {% if max_transmitter_receiver_distance %}
+        <h2>Results:</h2>
+
+        <p>Maximum transmitter-receiver distance for reliable communication: {{ max_transmitter_receiver_distance }}
+            meters
+        </p>
+        <p>Maximum cell size assuming hexagonal cells: {{ max_cell_size }} Km²</p>
+        <p>The number of cells in the service area: {{ num_cells_service_area }}</p>
+        <p>Traffic load in the whole cellular system in Erlangs: {{ total_traffic_load }}</p>
+        <p>Traffic load in each cell in Erlangs: {{ traffic_load_per_cell }}</p>
+        <p>Number of cells in each cluster: {{ num_cells_per_cluster }}</p>
+        <p>Minimum number of System carriers to achieve the required Quality of Service: {{ num_system_carriers }}</p>
+
+    {% endif %}
+</div>
+</body>
+</html>

@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Question 2</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f0f0;
+        }
+
+        nav {
+            background-color: #4CAF50;
+            padding: 10px;
+            text-align: center;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+        }
+
+        nav a {
+            color: white;
+            margin: 0 15px;
+            text-decoration: none;
+            font-weight: bold;
+            padding: 10px 20px; /* Add padding for better highlight */
+            border-radius: 3px;
+        }
+
+        nav a:hover {
+            background-color: #45a049; /* Highlight color on hover */
+        }
+
+        .container {
+            margin-top: 60px; /* Adjust this value based on nav height */
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+
+        form {
+            width: 50%;
+            margin: 20px auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+        }
+
+        .button-container {
+            text-align: center; /* Center the button container */
+        }
+
+        button {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        h2 {
+            margin-top: 20px;
+            color: #333;
+            text-align: center; /* Center the text */
+        }
+
+        p {
+            margin-bottom: 5px;
+            text-align: center; /* Center the text */
+        }
+
+        .messages {
+            color: red;
+            text-align: center; /* Center the messages */
+        }
+
+        .messages li {
+            list-style-position: inside; /* Ensure the bullets are inside the element */
+        }
+    </style>
+</head>
+<body>
+<nav>
+    <a href="/questionOne">Question 1</a>
+    <a href="/question2">Question 2</a>
+    <a href="/question3">Question 3</a>
+    <a href="/question4">Question 4</a>
+    <a href="/question5">Question 5</a>
+</nav>
+
+<div class="container">
+
+    <h1>Question 2</h1>
+    <form name="calculatorForm" method="post" action="{{ url_for('questiontwo') }}">
+        <label for="bandwidth">Bandwidth (kHz):</label>
+        <input type="text" name="bandwidth" value="{{ bandwidth |default('') }}" required><br>
+
+        <label for="subcarrier_spacing">Subcarrier Spacing (kHz):</label>
+        <input type="text" name="subcarrier_spacing" value="{{ subcarrier_spacing |default('') }}" required><br>
+
+        <label for="ofdm_symbols">OFDM Symbols per Resource Block:</label>
+        <input type="text" name="ofdm_symbols" value="{{ ofdm_symbols |default('') }}" required><br>
+
+        <label for="rb_duration">Resource Block Duration (ms):</label>
+        <input type="text" name="rb_duration" value="{{ rb_duration |default('') }}" required><br>
+
+        <label for="qam_bits">QAM Bits:</label>
+        <input type="text" name="qam_bits" value="{{ qam_bits |default('') }}" required><br>
+
+        <label for="num_parallel_rbs">Number of Parallel Resource Blocks Assigned:</label>
+        <input type="text" name="num_parallel_rbs" value="{{ num_parallel_rbs |default('') }}" required><br>
+
+        <div class="button-container">
+            <button type="submit">Calculate</button>
+        </div>
+    </form>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <ul class="messages">
+                {% for category, message in messages %}
+                    <li class="{{ category }}">{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    {% endwith %}
+
+    {% if bits_per_resource_element %}
+        <h2>Results:</h2>
+        <p>Bits per Resource Element: {{ bits_per_resource_element }} bits per resource element</p>
+        <p>Bits per OFDM Symbol: {{ bits_per_ofdm_symbol }} bits per symbol</p>
+        <p>Bits per OFDM Resource Block: {{ bits_per_ofdm_rb }} bits per resource block</p>
+        <p>Maximum Transmission Rate: {{ max_transmission_rate }} kbps</p>
+        <br><br>
+    {% endif %}
+</div>
+</body>
+</html>
