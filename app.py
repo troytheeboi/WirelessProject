@@ -86,7 +86,7 @@ def calculate():
 
         # Check if all inputs are numbers
         if not all(
-                map(lambda x: x.replace('.', '', 1).isdigit().replace('-', '', 1),
+                map(lambda x: x.replace('.', '', 1).isdigit(),
                     [bandwidth, source_encoder_rate, channel_encoder_rate])):
             flash("Bandwidth, Source Encoder Compression Rate, and Channel Encoder Compression Rate must be numbers",
                   "error")
