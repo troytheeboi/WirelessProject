@@ -126,14 +126,21 @@ def calculate():
                                    source_encoder_rate=source_encoder_rate,
                                    channel_encoder_rate=channel_encoder_rate,
                                    interleaver_bits=interleaver_bits)
+        else:
+            return render_template('question1.html',
+                                   bandwidth=request.form['bandwidth'],
+                                   quantizer_bits=request.form['quantizer_bits'],
+                                   source_encoder_rate=request.form['source_encoder_rate'],
+                                   channel_encoder_rate=request.form['channel_encoder_rate'],
+                                   interleaver_bits=request.form['interleaver_bits'])
 
     except Exception as e:
         return render_template('question1.html',
-                               bandwidth=bandwidth,
-                               quantizer_bits=quantizer_bits,
-                               source_encoder_rate=source_encoder_rate,
-                               channel_encoder_rate=channel_encoder_rate,
-                               interleaver_bits=interleaver_bits)
+                               bandwidth=request.form['bandwidth'],
+                               quantizer_bits=request.form['quantizer_bits'],
+                               source_encoder_rate=request.form['source_encoder_rate'],
+                               channel_encoder_rate=request.form['channel_encoder_rate'],
+                               interleaver_bits=request.form['interleaver_bits'])
 
 
 def calculate_sampling_frequency(bandwidth):
@@ -177,7 +184,7 @@ def questiontwo():
         # Validate inputs
         if not all(map(lambda x: x.replace('.', '', 1).replace('-', '', 1).isdigit(),
                        [bandwidth, subcarrier_spacing, ofdm_symbols, rb_duration, qam_bits, num_parallel_rbs])):
-            flash("All fields are required", "error")
+            flash("All fields have to be numbers", "error")
             goOn2 = False
 
         if not ofdm_symbols.isdigit():
@@ -227,7 +234,14 @@ def questiontwo():
                                    rb_duration=rb_duration,
                                    qam_bits=qam_bits,
                                    num_parallel_rbs=num_parallel_rbs)
-
+        else:
+            return render_template('question2.html',
+                                   bandwidth=request.form['bandwidth'],
+                                   subcarrier_spacing=request.form['subcarrier_spacing'],
+                                   ofdm_symbols=request.form['ofdm_symbols'],
+                                   rb_duration=request.form['rb_duration'],
+                                   qam_bits=request.form['qam_bits'],
+                                   num_parallel_rbs=request.form['num_parallel_rbs'])
     except Exception as e:
         return render_template('question2.html',
                                bandwidth=request.form['bandwidth'],
@@ -277,14 +291,14 @@ def questionthree():
         output_power_unit = request.form['output_power_unit']
         output_modulation_scheme = request.form['modulation_scheme']
 
-        # Validate inputs
-        if not all(map(lambda x: x.replace('.', '', 1).replace('-', '', 1).isdigit(),
-                       [path_loss, frequency, transmit_antenna_gain, receive_antenna_gain, data_rate, antenna_feed_loss,
-                        other_losses, fade_margin,
-                        receiver_amplifier_gain, total_noise_figure, noise_temperature, link_margin, max_bit_error_rate,
-                        ])):
-            flash("All fields are required", "error")
-            goOn2 = False
+        # # Validate inputs
+        # if not all(map(lambda x: x.replace('.', '', 1).replace('-', '', 1).isdigit(),
+        #                [path_loss, frequency, transmit_antenna_gain, receive_antenna_gain, data_rate, antenna_feed_loss,
+        #                 other_losses, fade_margin,
+        #                 receiver_amplifier_gain, total_noise_figure, noise_temperature, link_margin, max_bit_error_rate,
+        #                 ])):
+        #     flash("All fields have to be numbers", "error")
+        #     goOn2 = False
 
         if not isfloat(path_loss):
             flash("Path Loss has to be a number", "error")
@@ -479,11 +493,11 @@ def questionfour():
         frame_size = request.form['frame_size']
         frame_rate = request.form['frame_rate']
 
-        # Validate inputs
-        if not all(map(lambda x: x.replace('.', '', 1).replace('-', '', 1).isdigit(),
-                       [transmission_bandwidth, propagation_time, frame_size, frame_rate])):
-            flash("All fields are required", "error")
-            goOn2 = False
+        # # Validate inputs
+        # if not all(map(lambda x: x.replace('.', '', 1).replace('-', '', 1).isdigit(),
+        #                [transmission_bandwidth, propagation_time, frame_size, frame_rate])):
+        #     flash("All fields are required", "error")
+        #     goOn2 = False
 
         if not isfloat(transmission_bandwidth):
             flash("Transmission Bandwidth has to be a number", "error")
@@ -501,45 +515,48 @@ def questionfour():
             flash("Frame Rate has to be a number", "error")
             goOn2 = False
 
-        # Retrieve input values from form
-        transmission_bandwidth = float(request.form['transmission_bandwidth'])
-        propagation_time = float(request.form['propagation_time'])
-        frame_size = float(request.form['frame_size'])
-        frame_rate = float(request.form['frame_rate'])
-
         bw_bfr = transmission_bandwidth
         prop_bfr = propagation_time
         fram_size_bfr = frame_size
         fram_rate_bfr = frame_rate
 
-        transmission_bandwidth = transmission_bandwidth * 10 ** 6
-        propagation_time = propagation_time * 10 ** -6
-        frame_size = frame_size * 1000
-        frame_rate = frame_rate * 1000
-
-        # Calculate throughputs
-        throughput_pure_aloha = calculate_throughput_pure_aloha(transmission_bandwidth, frame_size, frame_rate)
-
-        throughput_slotted_aloha = calculate_throughput_slotted_aloha(transmission_bandwidth, frame_size, frame_rate)
-
-        throughput_unslotted_nonpersistent_csma = calculate_throughput_unslotted_nonpersistent_csma(
-            transmission_bandwidth, propagation_time, frame_size, frame_rate)
-
-        throughput_slotted_nonpersistent_csma = calculate_throughput_slotted_nonpersistent_csma(transmission_bandwidth,
-                                                                                                propagation_time,
-                                                                                                frame_size, frame_rate)
-
-        throughput_slotted_persistent_csma = calculate_throughput_slotted_persistent_csma(transmission_bandwidth,
-                                                                                          propagation_time, frame_size,
-                                                                                          frame_rate)
-
-        throughput_pure_aloha = throughput_pure_aloha * 100
-        throughput_slotted_aloha = throughput_slotted_aloha * 100
-        throughput_unslotted_nonpersistent_csma = throughput_unslotted_nonpersistent_csma * 100
-        throughput_slotted_nonpersistent_csma = throughput_slotted_nonpersistent_csma * 100
-        throughput_slotted_persistent_csma = throughput_slotted_persistent_csma * 100
-
         if (goOn2):
+            # Retrieve input values from form
+            transmission_bandwidth = float(request.form['transmission_bandwidth'])
+            propagation_time = float(request.form['propagation_time'])
+            frame_size = float(request.form['frame_size'])
+            frame_rate = float(request.form['frame_rate'])
+
+            transmission_bandwidth = transmission_bandwidth * 10 ** 6
+            propagation_time = propagation_time * 10 ** -6
+            frame_size = frame_size * 1000
+            frame_rate = frame_rate * 1000
+
+            # Calculate throughputs
+            throughput_pure_aloha = calculate_throughput_pure_aloha(transmission_bandwidth, frame_size, frame_rate)
+
+            throughput_slotted_aloha = calculate_throughput_slotted_aloha(transmission_bandwidth, frame_size,
+                                                                          frame_rate)
+
+            throughput_unslotted_nonpersistent_csma = calculate_throughput_unslotted_nonpersistent_csma(
+                transmission_bandwidth, propagation_time, frame_size, frame_rate)
+
+            throughput_slotted_nonpersistent_csma = calculate_throughput_slotted_nonpersistent_csma(
+                transmission_bandwidth,
+                propagation_time,
+                frame_size, frame_rate)
+
+            throughput_slotted_persistent_csma = calculate_throughput_slotted_persistent_csma(transmission_bandwidth,
+                                                                                              propagation_time,
+                                                                                              frame_size,
+                                                                                              frame_rate)
+
+            throughput_pure_aloha = throughput_pure_aloha * 100
+            throughput_slotted_aloha = throughput_slotted_aloha * 100
+            throughput_unslotted_nonpersistent_csma = throughput_unslotted_nonpersistent_csma * 100
+            throughput_slotted_nonpersistent_csma = throughput_slotted_nonpersistent_csma * 100
+            throughput_slotted_persistent_csma = throughput_slotted_persistent_csma * 100
+
             return render_template('question4.html',
                                    transmission_bandwidth=bw_bfr,
                                    propagation_time=prop_bfr,
@@ -550,6 +567,13 @@ def questionfour():
                                    throughput_unslotted_nonpersistent_csma=throughput_unslotted_nonpersistent_csma,
                                    throughput_slotted_nonpersistent_csma=throughput_slotted_nonpersistent_csma,
                                    throughput_slotted_persistent_csma=throughput_slotted_persistent_csma)
+
+        else:
+            return render_template('question4.html',
+                                   transmission_bandwidth=bw_bfr,
+                                   propagation_time=prop_bfr,
+                                   frame_size=fram_size_bfr,
+                                   frame_rate=fram_rate_bfr)
 
     except ValueError as e:
         return render_template('question4.html',
@@ -596,6 +620,7 @@ def calculate_throughput_slotted_persistent_csma(transmission_bandwidth, propaga
 
 @app.route('/question5', methods=['POST'])
 def questionfive():
+
     goOn2 = True
     try:
 
@@ -614,13 +639,13 @@ def questionfive():
         receiver_sensitivity_value = request.form['receiver_sensitivity_value']
         receiver_sensitivity_unit = request.form['receiver_sensitivity_unit']
 
-        # Validate inputs
-        if not all(map(lambda x: (x.replace('.', '', 1).replace('-', '', 1)).isdigit(),
-                       [timeslots_per_carrier, area, num_subscribers, calls_per_day, avg_call_duration,
-                        grade_of_service, min_sir_value, power_reference_value,
-                        reference_distance, path_loss_exponent, receiver_sensitivity_value])):
-            flash("All fields are required", "error")
-            goOn2 = False
+        # # Validate inputs
+        # if not all(map(lambda x: (x.replace('.', '', 1).replace('-', '', 1)).isdigit(),
+        #                [timeslots_per_carrier, area, num_subscribers, calls_per_day, avg_call_duration,
+        #                 grade_of_service, min_sir_value, power_reference_value,
+        #                 reference_distance, path_loss_exponent, receiver_sensitivity_value])):
+        #     flash("All fields are required", "error")
+        #     goOn2 = False
 
         if not timeslots_per_carrier.isdigit():
             flash("Timeslots has to be an integer", "error")
@@ -631,7 +656,7 @@ def questionfive():
             goOn2 = False
 
         if not num_subscribers.isdigit():
-            flash("Number of Subscribers has to be a number", "error")
+            flash("Number of Subscribers has to be an integer", "error")
             goOn2 = False
 
         if not isfloat(calls_per_day):
@@ -666,52 +691,57 @@ def questionfive():
             flash("Receiver Sensitivity has to be a number", "error")
             goOn2 = False
 
-        timeslots_per_carrier = int(request.form['timeslots_per_carrier'])
-        area = float(request.form['area'])
-        num_subscribers = int(request.form['num_subscribers'])
-        calls_per_day = float(request.form['calls_per_day'])
-        avg_call_duration = float(request.form['avg_call_duration'])
-        grade_of_service = float(request.form['grade_of_service'])
-        min_sir_value = float(request.form['min_sir_value'])
-        power_reference_value = float(request.form['power_reference_value'])
-        reference_distance = float(request.form['reference_distance'])
-        path_loss_exponent = float(request.form['path_loss_exponent'])
-        receiver_sensitivity_value = float(request.form['receiver_sensitivity_value'])
-
         area_bfr = area
-        area = area * 10 ** 6
-        min_sir_value_bfr = 1
-        min_sir_value_bfr = 1
-        power_reference_value_bfr = 1
-
-        if receiver_sensitivity_unit == 'μWatts':
-            sensitivity_bfr = receiver_sensitivity_value
-            receiver_sensitivity_value = receiver_sensitivity_value * 10 ** -6
-        else:
-            sensitivity_bfr = receiver_sensitivity_value
-            receiver_sensitivity_value = db_to_watt(receiver_sensitivity_value)
-            receiver_sensitivity_value = receiver_sensitivity_value * 10 ** -6
-
-        if min_sir_unit == 'dB':
-            min_sir_value_bfr = min_sir_value
-            min_sir_value = db_to_watt(min_sir_value)
-
-        if power_reference_unit == 'dB':
-            power_reference_value_bfr = power_reference_value
-            power_reference_value = db_to_watt(power_reference_value)
-
-        # Calculate outputs
-        max_transmitter_receiver_distance = calculate_max_distance(power_reference_value, reference_distance,
-                                                                   path_loss_exponent, receiver_sensitivity_value)
-        max_cell_size = calculate_max_cell_size(max_transmitter_receiver_distance)
-        num_cells_service_area = calculate_num_cells_service_area(area, max_cell_size)
-        total_traffic_load = calculate_total_traffic_load(num_subscribers, calls_per_day, avg_call_duration)
-        traffic_load_per_cell = calculate_traffic_load_per_cell(total_traffic_load, num_cells_service_area)
-        num_cells_per_cluster = calculate_num_cells_per_cluster(min_sir_value, path_loss_exponent)
-        num_system_carriers = calculate_num_system_carriers(traffic_load_per_cell, grade_of_service,
-                                                            timeslots_per_carrier)
+        min_sir_value_bfr = min_sir_value
+        power_reference_value_bfr = power_reference_value
+        sensitivity_bfr = receiver_sensitivity_value
 
         if (goOn2):
+
+            timeslots_per_carrier = int(request.form['timeslots_per_carrier'])
+            area = float(request.form['area'])
+            num_subscribers = int(request.form['num_subscribers'])
+            calls_per_day = float(request.form['calls_per_day'])
+            avg_call_duration = float(request.form['avg_call_duration'])
+            grade_of_service = float(request.form['grade_of_service'])
+            min_sir_value = float(request.form['min_sir_value'])
+            power_reference_value = float(request.form['power_reference_value'])
+            reference_distance = float(request.form['reference_distance'])
+            path_loss_exponent = float(request.form['path_loss_exponent'])
+            receiver_sensitivity_value = float(request.form['receiver_sensitivity_value'])
+
+            area_bfr = area
+            area = area * 10 ** 6
+            min_sir_value_bfr = 1
+            min_sir_value_bfr = 1
+            power_reference_value_bfr = 1
+
+            if receiver_sensitivity_unit == 'μWatts':
+                sensitivity_bfr = receiver_sensitivity_value
+                receiver_sensitivity_value = receiver_sensitivity_value * 10 ** -6
+            else:
+                sensitivity_bfr = receiver_sensitivity_value
+                receiver_sensitivity_value = db_to_watt(receiver_sensitivity_value)
+                receiver_sensitivity_value = receiver_sensitivity_value * 10 ** -6
+
+            if min_sir_unit == 'dB':
+                min_sir_value_bfr = min_sir_value
+                min_sir_value = db_to_watt(min_sir_value)
+
+            if power_reference_unit == 'dB':
+                power_reference_value_bfr = power_reference_value
+                power_reference_value = db_to_watt(power_reference_value)
+
+            # Calculate outputs
+            max_transmitter_receiver_distance = calculate_max_distance(power_reference_value, reference_distance,
+                                                                       path_loss_exponent, receiver_sensitivity_value)
+            max_cell_size = calculate_max_cell_size(max_transmitter_receiver_distance)
+            num_cells_service_area = calculate_num_cells_service_area(area, max_cell_size)
+            total_traffic_load = calculate_total_traffic_load(num_subscribers, calls_per_day, avg_call_duration)
+            traffic_load_per_cell = calculate_traffic_load_per_cell(total_traffic_load, num_cells_service_area)
+            num_cells_per_cluster = calculate_num_cells_per_cluster(min_sir_value, path_loss_exponent)
+            num_system_carriers = calculate_num_system_carriers(traffic_load_per_cell, grade_of_service,
+                                                                timeslots_per_carrier, num_cells_per_cluster)
             # Render results
             return render_template('question5.html',
                                    timeslots_per_carrier=timeslots_per_carrier,
@@ -813,7 +843,7 @@ def find_closest_value(df, target_column, target_value):
     return df.loc[closest_index, '(N)']
 
 
-def calculate_num_system_carriers(traffic_load_per_cell, grade_of_service, timeslots_per_carrier):
+def calculate_num_system_carriers(traffic_load_per_cell, grade_of_service, timeslots_per_carrier,num_cells_per_cluster):
     # Get the directory of the current script
     current_dir = os.path.dirname(__file__)
 
@@ -827,7 +857,7 @@ def calculate_num_system_carriers(traffic_load_per_cell, grade_of_service, times
 
     N = find_closest_value(df, closest_prob, traffic_load_per_cell)
 
-    return math.ceil(N / timeslots_per_carrier)
+    return math.ceil(N / timeslots_per_carrier)*num_cells_per_cluster
 
 
 if __name__ == '__main__':
